@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Game Store</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ==========================
+   Game Store CSS
+========================== */
+
+body{
+    margin:0;
+    background:#0f172a;
+    color:#fff;
+    min-height:100vh;
+    padding-bottom:90px;
+}
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+
+
+/* Scrollbar */
+
+::-webkit-scrollbar{
+    width:8px;
+}
+
+::-webkit-scrollbar-thumb{
+    background:#3b82f6;
+    border-radius:10px;
+}
+
+/* Header */
+
+header{
+    width:100%;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:18px 8%;
+
+    position:sticky;
+    top:0;
+
+    backdrop-filter:blur(18px);
+
+    background:rgba(20,20,20,.65);
+
+    z-index:999;
+}
+
+/* Logo */
+
+.logo{
+    font-size:30px;
+    font-weight:700;
+
+    color:#4da3ff;
+}
+
+/* Search */
+
+.searchBox{
+    width:40%;
+}
+
+.searchBox input{
+
+    width:100%;
+
+    padding:14px 18px;
+
+    border:none;
+
+    border-radius:50px;
+
+    outline:none;
+
+    background:#1f2937;
+
+    color:white;
+
+    font-size:16px;
+
+    transition:.3s;
+}
+
+.searchBox input:focus{
+
+    box-shadow:0 0 20px #4da3ff;
+
+}
+
+/* Right */
+
+.userBox{
+
+display:flex;
+
+align-items:center;
+
+gap:15px;
+
+}
+
+#coins{
+
+background:#ffcc00;
+
+color:black;
+
+padding:10px 18px;
+
+border-radius:30px;
+
+font-weight:bold;
+
+}
+
+#loginBtn{
+
+padding:10px 22px;
+
+border:none;
+
+border-radius:30px;
+
+background:#3b82f6;
+
+color:white;
+
+cursor:pointer;
+
+font-weight:bold;
+
+transition:.3s;
+
+}
+
+#loginBtn:hover{
+
+transform:scale(1.08);
+
+}
+
+/* Games */
+
+#gamesContainer{
+
+padding:40px 8%;
+
+display:grid;
+
+grid-template-columns:
+
+repeat(auto-fill,minmax(260px,1fr));
+
+gap:25px;
+
+}
+
+/* Card */
+
+
+
+/* Image */
+
+.gameCard img{
+
+width:100%;
+
+height:220px;
+
+object-fit:cover;
+
+}
+
+/* Content */
+
+.gameInfo{
+
+padding:18px;
+
+}
+
+.gameInfo h2{
+
+font-size:21px;
+
+margin-bottom:10px;
+
+}
+
+.gameInfo p{
+
+font-size:14px;
+
+opacity:.8;
+
+margin-bottom:12px;
+
+}
+
+
+
+/* Loading */
+
+#loading{
+
+position:fixed;
+
+top:0;
+
+left:0;
+
+width:100%;
+
+height:100%;
+
+background:#0d1117;
+
+display:flex;
+
+flex-direction:column;
+
+justify-content:center;
+
+align-items:center;
+
+z-index:5000;
+
+}
+
+.loader{
+
+width:70px;
+
+height:70px;
+
+border:8px solid #222;
+
+border-top:8px solid #4da3ff;
+
+border-radius:50%;
+
+animation:spin 1s linear infinite;
+
+}
+
+@keyframes spin{
+
+100%{
+
+transform:rotate(360deg);
+
+}
+
+}
+
+/* Popup */
+
+
+
+/* Footer */
+
+footer{
+
+padding:25px;
+
+text-align:center;
+
+opacity:.6;
+
+}
+
+/* Mobile */
+
+@media(max-width:768px){
+
+header{
+
+flex-direction:column;
+
+gap:18px;
+
+}
+
+.searchBox{
+
+width:100%;
+
+}
+
+.logo{
+
+font-size:25px;
+
+}
+
+}
+
+.highlight{
+    background:#ffeb3b;
+    color:#000;
+    padding:2px 4px;
+    border-radius:4px;
+}
+
+.noResult{
+    text-align:center;
+    color:#ff5a5a;
+    margin-top:40px;
+}
+
+
+#username{
+
+    font-weight:bold;
+
+    color:white;
+
+    margin-right:10px;
+
+}
+
+#logoutBtn{
+
+    background:#ef4444;
+
+    color:white;
+
+    border:none;
+
+    padding:10px 20px;
+
+    border-radius:30px;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+#logoutBtn:hover{
+
+    transform:scale(1.05);
+
+}
+
+/* =====================
+   Index V2 Design
+===================== */
+
+
+
+
+/* Sections */
+
+#featuredSection,
+#gamesSection{
+
+    padding:25px;
+
+    max-width:1200px;
+
+    margin:auto;
+
+}
+
+
+#featuredSection h2,
+#gamesSection h2{
+
+    margin-bottom:20px;
+
+}
+
+
+/* Game Grid */
+
+#featuredGames,
+#gamesContainer{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(auto-fill,minmax(260px,1fr));
+
+    gap:20px;
+
+}
+
+
+
+/* Game Card */
+
+.gameCard{
+
+    background:#1e293b;
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+    position:relative;
+
+    box-shadow:
+    0 10px 25px rgba(0,0,0,.35);
+
+    transition:.3s;
+
+}
+
+
+.gameCard:hover{
+
+    transform:translateY(-8px);
+
+}
+
+
+/* Image */
+
+.gameCard img{
+
+    width:100%;
+
+    height:170px;
+
+    object-fit:cover;
+
+}
+
+
+/* Info */
+
+.gameInfo{
+
+    padding:18px;
+
+}
+
+
+.gameInfo h3{
+
+    font-size:22px;
+
+    margin-bottom:8px;
+
+}
+
+
+.gameInfo p{
+
+    color:#cbd5e1;
+
+    font-size:14px;
+
+}
+
+
+
+/* Coin */
+
+.coin{
+
+    color:#facc15;
+
+    font-weight:bold;
+
+    margin:10px 0;
+
+}
+
+
+
+/* Badge */
+
+.badge{
+
+    position:absolute;
+
+    top:12px;
+
+    left:12px;
+
+    padding:6px 12px;
+
+    border-radius:20px;
+
+    background:#2563eb;
+
+    font-size:12px;
+
+    font-weight:bold;
+
+}
+
+
+.newBadge{
+
+    background:#22c55e;
+
+}
+
+
+.popularBadge{
+
+    background:#f97316;
+
+}
+
+
+/* Device Tags */
+
+.deviceTags{
+
+    display:flex;
+
+    gap:8px;
+
+    flex-wrap:wrap;
+
+}
+
+
+.deviceTag{
+
+    background:#334155;
+
+    padding:6px 10px;
+
+    border-radius:20px;
+
+    font-size:13px;
+
+}
+
+
+/* Popup */
+
+.popup{
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(0,0,0,.7);
+
+    display:none;
+
+    justify-content:center;
+
+    align-items:center;
+
+    z-index:999;
+
+}
+
+
+.popup.show{
+
+    display:flex;
+
+}
+
+
+.popupContent{
+
+    background:#1e293b;
+
+    width:90%;
+
+    max-width:450px;
+
+    padding:25px;
+
+    border-radius:20px;
+
+}
+
+
+.popupContent img{
+
+    width:100%;
+
+    border-radius:15px;
+
+}
+
+
+/* Device Buttons */
+
+#deviceButtons{
+
+    display:flex;
+
+    gap:10px;
+
+    flex-wrap:wrap;
+
+    margin:20px 0;
+
+}
+
+
+.deviceBtn{
+
+    border:none;
+
+    padding:12px 18px;
+
+    border-radius:12px;
+
+    background:#2563eb;
+
+    color:white;
+
+    cursor:pointer;
+
+}
+
+
+.deviceBtn:hover{
+
+    transform:scale(1.05);
+
+}
+
+
+
+/* Mobile */
+
+@media(max-width:600px){
+
+#featuredGames,
+#gamesContainer{
+
+grid-template-columns:1fr;
+
+}
+
+}
+
+.topBar{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+padding:18px;
+
+background:#111827;
+
+position:sticky;
+
+top:0;
+
+z-index:1000;
+
+}
+
+.logoBox{
+
+display:flex;
+
+align-items:center;
+
+gap:12px;
+
+}
+
+.logo{
+
+width:55px;
+
+height:55px;
+
+border-radius:15px;
+
+}
+
+#cartBtn{
+
+background:#2563eb;
+
+color:white;
+
+border:none;
+
+padding:12px 16px;
+
+border-radius:15px;
+
+font-size:22px;
+
+position:relative;
+
+cursor:pointer;
+
+}
+
+#cartCount{
+
+position:absolute;
+
+top:-8px;
+
+right:-8px;
+
+background:red;
+
+color:white;
+
+border-radius:50%;
+
+padding:2px 7px;
+
+font-size:12px;
+
+}
+
+.searchBox{
+
+padding:15px;
+
+}
+
+.searchBox input{
+
+width:100%;
+
+padding:14px;
+
+border:none;
+
+border-radius:15px;
+
+font-size:16px;
+
+background:#1e293b;
+
+color:white;
+
+}
+
+.bottomNav{
+
+position:fixed;
+
+bottom:0;
+
+left:0;
+
+width:100%;
+
+display:flex;
+
+justify-content:space-around;
+
+background:#111827;
+
+padding:12px 0;
+
+}
+
+.navBtn{
+
+background:none;
+
+border:none;
+
+color:white;
+
+font-size:16px;
+
+cursor:pointer;
+
+}
+
+.navBtn.active{
+
+color:#38bdf8;
+
+font-weight:bold;
+
+}
+
+body{
+
+padding-bottom:90px;
+
+}
+.comingSoon{
+
+    color:#f59e0b;
+
+    font-weight:bold;
+
+    margin-top:10px;
+
+}
+</style>
+</head>
+
+<body>
+
+<header class="topBar">
+
+    <div class="logoBox">
+
+        <img src="https://pocketstudio.qzz.io/icon.png" class="logo">
+
+        <div>
+
+            <h2>Pocket Game Store</h2>
+
+            <small>Download Premium Games</small>
+
+        </div>
+
+    </div>
+
+    <button id="cartBtn">
+
+        🛒
+        <span id="cartCount">0</span>
+
+    </button>
+
+</header>
+
+
+<div class="searchBox">
+
+    <input
+    type="text"
+    id="search"
+    placeholder="🔍 Search Games">
+
+</div>
+
+
+<section class="featured">
+
+    <h2>🔥 Featured Games</h2>
+
+    <div id="featuredGames"></div>
+
+</section>
+
+
+<section class="allGames">
+
+    <h2>🎮 All Games</h2>
+
+    <div id="gamesContainer"></div>
+
+</section>
+
+
+<nav class="bottomNav">
+
+<button class="navBtn active">
+
+🏠
+
+<br>
+
+Home
+
+</button>
+
+
+<button
+class="navBtn"
+onclick="location.href='library.html'">
+
+📚
+
+<br>
+
+Library
+
+</button>
+
+
+<button
+class="navBtn"
+onclick="location.href='profile.html'">
+
+👤
+
+<br>
+
+Profile
+
+</button>
+
+</nav>
+
+<script type="module" src="firebase-config.js"></script>
+<script type="module">
+// ================================
+// Pocket Game Store
+// ================================
+
+import { auth, db } from "./firebase-config.js";
+
+import {
+    onAuthStateChanged,
+    signOut
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+import {
+    ref,
+    onValue
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+
+// ================================
+// Elements
+// ================================
+
+const gamesContainer = document.getElementById("gamesContainer");
+const featuredGames = document.getElementById("featuredGames");
+const searchInput = document.getElementById("search");
+
+const cartBtn = document.getElementById("cartBtn");
+const cartCount = document.getElementById("cartCount");
+
+
+// ================================
+// Variables
+// ================================
+
+let games = [];
+let currentUser = null;
+
+
+// ================================
+// Auth
+// ================================
+
+onAuthStateChanged(auth,(user)=>{
+
+    currentUser = user;
+
+    if(user){
+
+        // Live Cart Counter
+
+        onValue(
+            ref(db,"users/"+user.uid+"/cart"),
+            (snap)=>{
+
+                if(!cartCount) return;
+
+                if(!snap.exists()){
+
+                    cartCount.textContent = "0";
+                    return;
+
+                }
+
+                cartCount.textContent =
+                Object.keys(snap.val()).length;
+
+            }
+        );
+
+    }else{
+
+        if(cartCount){
+
+            cartCount.textContent = "0";
+
+        }
+
+    }
+
+});
+
+
+// ================================
+// Cart Button
+// ================================
+
+if(cartBtn){
+
+    cartBtn.onclick = ()=>{
+
+        if(!currentUser){
+
+            alert("Please login first.");
+
+            location.href = "login.html";
+
+            return;
+
+        }
+
+        location.href = "cart.html";
+
+    };
+
+}
+
+// ================================
+// Load Games
+// ================================
+
+function loadGames(){
+
+    onValue(ref(db,"games"),(snapshot)=>{
+
+        games = [];
+
+        if(gamesContainer)
+            gamesContainer.innerHTML = "";
+
+        if(featuredGames)
+            featuredGames.innerHTML = "";
+
+        if(!snapshot.exists()){
+
+            if(gamesContainer){
+
+                gamesContainer.innerHTML = `
+                <h2 style="text-align:center;">
+                No Games Found
+                </h2>
+                `;
+
+            }
+
+            return;
+
+        }
+
+        snapshot.forEach((child)=>{
+
+            const game = child.val();
+
+            game.id = child.key;
+
+            games.push(game);
+
+        });
+
+        showGames(games);
+
+    });
+
+}
+
+
+
+// ================================
+// Search
+// ================================
+
+if(searchInput){
+
+    searchInput.addEventListener("input",()=>{
+
+        const keyword =
+        searchInput.value
+        .trim()
+        .toLowerCase();
+
+
+        const filtered =
+        games.filter(game=>{
+
+            return(
+
+                (game.name || "")
+                .toLowerCase()
+                .includes(keyword)
+
+                ||
+
+                (game.description || "")
+                .toLowerCase()
+                .includes(keyword)
+
+            );
+
+        });
+
+
+        showGames(filtered);
+
+    });
+
+}
+
+// ================================
+// Show Games
+// ================================
+
+function showGames(list){
+
+    if(gamesContainer)
+        gamesContainer.innerHTML = "";
+
+    if(featuredGames)
+        featuredGames.innerHTML = "";
+
+
+    list.forEach(game=>{
+
+        const card = createGameCard(game);
+
+        if(gamesContainer){
+
+            gamesContainer.appendChild(card);
+
+        }
+
+
+        if(game.featured && featuredGames){
+
+            featuredGames.appendChild(
+                createGameCard(game)
+            );
+
+        }
+
+    });
+
+}
+
+
+
+// ================================
+// Create Game Card
+// ================================
+
+function createGameCard(game){
+
+    const card =
+    document.createElement("div");
+
+    card.className = "gameCard";
+
+
+    // Check if at least one device is downloadable
+    let downloadable = false;
+
+    Object.values(game.devices || {}).forEach(device=>{
+
+        if(
+            device.enabled &&
+            device.link &&
+            device.link.trim() !== ""
+        ){
+
+            downloadable = true;
+
+        }
+
+    });
+
+
+    card.innerHTML = `
+
+        <img src="${game.image}" alt="${game.name}">
+
+        <div class="gameInfo">
+
+            <h3>${game.name}</h3>
+
+            <p>${game.description || ""}</p>
+
+            ${
+                downloadable
+                ?
+
+                `<div class="coin">
+                    🪙 ${game.coin}
+                </div>`
+
+                :
+
+                `<div class="comingSoon">
+                    ⏳ Coming Soon
+                </div>`
+            }
+
+        </div>
+
+    `;
+
+
+    card.onclick = ()=>{
+
+        location.href =
+        "game.html?id=" +
+        encodeURIComponent(game.id);
+
+    };
+
+
+    return card;
+
+}
+
+
+
+// ================================
+// Start
+// ================================
+
+loadGames();
+</script>
+</body>
+
+</html>

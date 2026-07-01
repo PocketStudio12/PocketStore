@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Profile</title>
+
+<style>
+.bottomNav{
+
+position:fixed;
+
+bottom:0;
+
+left:0;
+
+width:100%;
+
+height:65px;
+
+background:#111827;
+
+display:flex;
+
+justify-content:space-around;
+
+align-items:center;
+
+border-top:1px solid #334155;
+
+}
+
+.bottomNav button{
+
+background:none;
+
+border:none;
+
+color:white;
+
+font-size:15px;
+
+cursor:pointer;
+
+}
+
+.bottomNav .active{
+
+color:#38bdf8;
+
+font-weight:bold;
+
+}
+
+body{
+
+padding-bottom:80px;
+
+}
+body{
+    margin:0;
+    font-family:Poppins,sans-serif;
+    background:#0f172a;
+    color:white;
+}
+
+.container{
+    max-width:500px;
+    margin:auto;
+    padding:20px;
+}
+
+.card{
+    background:#1e293b;
+    padding:20px;
+    border-radius:20px;
+    margin-top:20px;
+}
+
+button{
+    width:100%;
+    padding:15px;
+    margin-top:15px;
+    border:none;
+    border-radius:12px;
+    background:#2563eb;
+    color:white;
+    font-size:17px;
+    cursor:pointer;
+}
+
+.logout{
+    background:#dc2626;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>👤 Profile</h1>
+
+<div class="card">
+
+<h2 id="username">Loading...</h2>
+
+<h3 id="coins">🪙 0</h3>
+
+<button id="claimBtn">
+🎁 Claim +5 Coins
+</button>
+
+<button onclick="location.href='library.html'">
+📚 My Library
+</button>
+
+<button onclick="location.href='cart.html'">
+🛒 My Cart
+</button>
+
+<button
+id="logoutBtn"
+class="logout">
+🚪 Logout
+</button>
+
+</div>
+
+</div>
+
+<script type="module">
+import { auth, db } from "./firebase-config.js";
+
+import {
+    onAuthStateChanged,
+    signOut
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+import {
+    ref,
+    onValue,
+    get,
+    update
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+const username =
+document.getElementById("username");
+
+const coins =
+document.getElementById("coins");
+
+const claimBtn =
+document.getElementById("claimBtn");
+
+const logoutBtn =
+document.getElementById("logoutBtn");
+
+let currentUser = null;
+
+
+// ======================
+// Login Check
+// ======================
+
+onAuthStateChanged(auth,(user)=>{
+
+    if(!user){
+
+        location.href="login.html";
+
+        return;
+
+    }
+
+    currentUser = user;
+
+    onValue(
+
+        ref(db,"users/"+user.uid),
+
+        (snap)=>{
+
+            if(!snap.exists())
+                return;
+
+            const data = snap.val();
+
+            username.textContent =
+            data.username || "User";
+
+            coins.textContent =
+            "🪙 " + (data.coins || 0);
+
+        }
+
+    );
+
+});
+
+
+// ======================
+// Claim +5 Coins
+// ======================
+
+claimBtn.onclick = async ()=>{
+
+    if(!currentUser)
+        return;
+
+    // পরে এখানে AppLixir Rewarded Ad দেখাবেন।
+    // এখন শুধু +5 Coins দিচ্ছে।
+
+    const snap = await get(
+        ref(db,"users/"+currentUser.uid)
+    );
+
+    if(!snap.exists())
+        return;
+
+    const data = snap.val();
+
+    await update(
+
+        ref(db,"users/"+currentUser.uid),
+
+        {
+            coins:
+            (data.coins || 0) + 5
+        }
+
+    );
+
+    alert("🎉 +5 Coins Added!");
+
+};
+
+
+// ======================
+// Logout
+// ======================
+
+logoutBtn.onclick = async ()=>{
+
+    await signOut(auth);
+
+    location.href = "login.html";
+
+};
+</script>
+
+
+<nav class="bottomNav">
+
+<button onclick="location.href='index.html'">
+🏠<br>Home
+</button>
+
+<button onclick="location.href='library.html'">
+📚<br>Library
+</button>
+
+<button class="active">
+👤<br>Profile
+</button>
+
+</nav>
+</body>
+</html>
