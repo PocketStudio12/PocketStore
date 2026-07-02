@@ -376,12 +376,12 @@ logoutBtn.onclick = async () => {
 
     await signOut(auth);
 
-    location.href = "login.html";
+    location.href = "login1.html";
 
 };
 onAuthStateChanged(auth, async (user) => {
     if (!user) {
-        location.href = "login.html";
+        location.href = "login1.html";
         return;
     }
 
