@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta property="og:title" content="Pocket Store Developer Portal">
+<meta property="og:description" content="Pocket Store Developer Portal For Only Developer">
+<meta property="og:image" content="https://pocketstudio.qzz.io/icon.png">
+
+<link rel="icon" href="https://pocketstudio.qzz.io/icon.png">
+
+<title>Pocket Developer Dashboard</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+body{
+background:#0f172a;
+color:#fff;
+}
+
+header{
+height:70px;
+background:#111827;
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:0 20px;
+border-bottom:1px solid #1f2937;
+}
+
+.logo{
+font-size:24px;
+font-weight:700;
+}
+
+.right{
+display:flex;
+align-items:center;
+gap:15px;
+}
+
+#userName{
+font-weight:500;
+}
+
+#logoutBtn{
+background:#ef4444;
+color:white;
+border:none;
+padding:10px 18px;
+border-radius:10px;
+cursor:pointer;
+}
+
+main{
+max-width:1200px;
+margin:auto;
+padding:25px;
+}
+
+#requestBox{
+margin-bottom:20px;
+}
+
+.card{
+background:#1e293b;
+padding:20px;
+border-radius:16px;
+margin-bottom:20px;
+}
+
+.dashboard{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:20px;
+margin-bottom:25px;
+}
+
+.stat{
+background:#1e293b;
+padding:25px;
+border-radius:16px;
+text-align:center;
+}
+
+.stat h3{
+color:#94a3b8;
+margin-bottom:10px;
+}
+
+.stat h1{
+font-size:32px;
+color:#3b82f6;
+}
+
+.upload{
+background:#1e293b;
+padding:20px;
+border-radius:16px;
+margin-bottom:25px;
+}
+
+.upload h2{
+margin-bottom:15px;
+}
+
+.upload input,
+.upload textarea,
+.upload select{
+width:100%;
+padding:14px;
+margin-bottom:15px;
+background:#0f172a;
+border:none;
+border-radius:10px;
+color:white;
+}
+
+.upload textarea{
+min-height:120px;
+resize:vertical;
+}
+
+.devices{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+gap:10px;
+margin:15px 0;
+}
+
+.devices label{
+background:#0f172a;
+padding:12px;
+border-radius:10px;
+cursor:pointer;
+}
+
+#deviceInputs{
+margin-top:15px;
+}
+
+#preview{
+display:none;
+width:100%;
+max-width:320px;
+margin:20px auto;
+border-radius:15px;
+}
+
+#uploadBtn{
+width:100%;
+padding:15px;
+background:#2563eb;
+color:white;
+border:none;
+border-radius:12px;
+font-size:17px;
+cursor:pointer;
+}
+
+.games{
+background:#1e293b;
+padding:20px;
+border-radius:16px;
+}
+
+#gamesList{
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+gap:20px;
+margin-top:20px;
+}
+
+.gameCard{
+background:#0f172a;
+border-radius:14px;
+overflow:hidden;
+}
+
+.gameCard img{
+width:100%;
+height:180px;
+object-fit:cover;
+}
+
+.gameInfo{
+padding:15px;
+}
+
+.gameInfo h3{
+margin-bottom:10px;
+}
+
+.gameInfo p{
+margin-bottom:10px;
+color:#cbd5e1;
+}
+
+.actions{
+display:flex;
+gap:10px;
+margin-top:10px;
+}
+
+.actions button{
+flex:1;
+padding:10px;
+border:none;
+border-radius:10px;
+color:white;
+cursor:pointer;
+}
+
+.editBtn{
+background:#22c55e;
+}
+
+.deleteBtn{
+background:#ef4444;
+}
+
+@media(max-width:700px){
+
+header{
+flex-direction:column;
+height:auto;
+padding:15px;
+gap:10px;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<div class="logo">
+🎮 Developer Dashboard
+</div>
+
+<div class="right">
+
+<span id="userName">
+Loading...
+</span>
+
+<button id="logoutBtn">
+Logout
+</button>
+
+</div>
+
+</header>
+
+<main>
+
+<div id="requestBox"></div>
+
+<section class="dashboard">
+
+<div class="stat">
+<h3>My Games</h3>
+<h1 id="totalGames">0</h1>
+</div>
+
+<div class="stat">
+<h3>Total Downloads</h3>
+<h1 id="totalDownloads">0</h1>
+</div>
+
+<div class="stat">
+<h3>Total Coins</h3>
+<h1 id="totalCoins">0</h1>
+</div>
+
+</section>
+
+<section class="upload">
+
+<h2>Upload Game</h2>
+
+<input type="text" id="gameName" placeholder="Game Name">
+
+<textarea id="description" placeholder="Description"></textarea>
+
+<input type="url" id="imageLink" placeholder="Image URL">
+
+<input type="number" id="coin" placeholder="Coin Price">
+
+<select id="category">
+<option value="">Select Category</option>
+<option>Action</option>
+<option>Adventure</option>
+<option>Horror</option>
+<option>Simulation</option>
+<option>Racing</option>
+<option>Puzzle</option>
+<option>Arcade</option>
+</select>
+
+<div class="devices">
+
+<label><input type="checkbox" id="windowsCheck"> Windows</label>
+
+<label><input type="checkbox" id="androidCheck"> Android</label>
+
+<label><input type="checkbox" id="linuxCheck"> Linux</label>
+
+<label><input type="checkbox" id="macCheck"> macOS</label>
+
+<label><input type="checkbox" id="iosCheck"> iOS</label>
+
+<label><input type="checkbox" id="webCheck"> Web</label>
+</div>
+
+<div id="deviceInputs"></div>
+
+<img id="preview">
+
+<button id="uploadBtn">
+Upload Game
+</button>
+
+</section>
+
+<section class="games">
+
+<h2>My Games</h2>
+
+<div id="gamesList">
+Loading...
+</div>
+
+</section>
+
+</main>
+
+<script type="module">
+import { auth, db } from "./firebase-config.js";
+
+import {
+onAuthStateChanged,
+signOut
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+import {
+ref,
+get,
+set,
+push,
+update,
+remove,
+onValue
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+const userName = document.getElementById("userName");
+const logoutBtn = document.getElementById("logoutBtn");
+const requestBox = document.getElementById("requestBox");
+
+let currentUser = null;
+
+logoutBtn.onclick = async () => {
+
+    await signOut(auth);
+
+    location.href = "login.html";
+
+};
+onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+        location.href = "login.html";
+        return;
+    }
+
+    currentUser = user;
+    userName.textContent = user.displayName || user.email;
+
+    let userData = {};
+
+    try {
+        const snap = await get(ref(db, "users/" + user.uid));
+        userData = snap.exists() ? snap.val() : {};
+    } catch (err) {
+        console.log(err.message);
+    }
+
+    if (userData.role === "developer") {
+
+        requestBox.innerHTML = "";
+
+        document.querySelector(".dashboard").style.display = "";
+        document.querySelector(".upload").style.display = "";
+        document.querySelector(".games").style.display = "";
+
+        loadDashboard();
+        loadGames();
+
+    } else {
+
+        showRequestPage(user);
+
+    }
+});
+async function showRequestPage(user) {
+
+    document.querySelector(".dashboard").style.display = "none";
+    document.querySelector(".upload").style.display = "none";
+    document.querySelector(".games").style.display = "none";
+
+    let reqSnap;
+
+    try {
+        reqSnap = await get(ref(db, "developerRequests/" + user.uid));
+    } catch (e) {
+        console.log("Request error:", e.message);
+        reqSnap = { exists: () => false };
+    }
+
+    if (reqSnap.exists()) {
+        requestBox.innerHTML = `
+        <div class="card">
+            <h2>⏳ Request Pending</h2>
+            <p>Your developer request is waiting for admin approval.</p>
+        </div>
+        `;
+        return;
+    }
+
+    requestBox.innerHTML = `
+    <div class="card">
+        <h2>Become a Developer</h2>
+        <p>Send request for developer access</p>
+        <button id="sendRequestBtn">Send Request</button>
+    </div>
+    `;
+
+    document.getElementById("sendRequestBtn").onclick = async () => {
+        await set(ref(db, "developerRequests/" + user.uid), {
+            uid: user.uid,
+            username: user.displayName || "User",
+            email: user.email,
+            status: "pending",
+            time: Date.now()
+        });
+
+        alert("Request sent!");
+        location.reload();
+    };
+}
+async function sendRequest() {
+
+    await set(
+
+        ref(db, "developerRequests/" + currentUser.uid),
+
+        {
+            uid: currentUser.uid,
+            username: currentUser.displayName || "User",
+            email: currentUser.email,
+            time: Date.now(),
+            status: "pending"
+        }
+
+    );
+
+    alert("Developer request sent.");
+
+    location.reload();
+
+}
+
+/* These will be added in the next parts */
+
+
+
+// ===========================
+// Upload Game
+// ===========================
+
+
+const gameName = document.getElementById("gameName");
+const description = document.getElementById("description");
+const imageLink = document.getElementById("imageLink");
+const coin = document.getElementById("coin");
+const category = document.getElementById("category");
+const preview = document.getElementById("preview");
+const uploadBtn = document.getElementById("uploadBtn");
+const deviceInputs = document.getElementById("deviceInputs");
+
+let editMode = false;
+let editingGameId = null;
+
+const deviceList = [
+"windows",
+"android",
+"linux",
+"mac",
+"ios",
+"web"
+];
+
+// Image Preview
+imageLink.addEventListener("input", () => {
+
+    if(imageLink.value.trim()==""){
+
+        preview.style.display="none";
+        return;
+
+    }
+
+    preview.src=imageLink.value;
+    preview.style.display="block";
+
+});
+
+// Device Inputs
+deviceList.forEach(device=>{
+
+    document
+    .getElementById(device+"Check")
+    .addEventListener("change",renderDeviceInputs);
+
+});
+function renderDeviceInputs(){
+
+    deviceInputs.innerHTML = "";
+
+    deviceList.forEach(device => {
+
+        const check = document.getElementById(device + "Check");
+
+        if (!check.checked) return;
+
+        const input = document.createElement("textarea");
+
+        input.id = device + "Link";
+
+        if (device === "web") {
+            input.placeholder = "Paste HTML code here (Web App/Game)";
+        } else {
+            input.placeholder = device + " Download Link";
+        }
+
+        input.style.width = "100%";
+        input.style.minHeight = "120px";
+        input.style.marginBottom = "10px";
+        input.style.padding = "12px";
+        input.style.borderRadius = "10px";
+        input.style.background = "#0f172a";
+        input.style.color = "white";
+        input.style.border = "none";
+
+        deviceInputs.appendChild(input);
+    });
+}
+
+// Upload / Update
+uploadBtn.onclick=async()=>{
+
+    if(gameName.value.trim()==""){
+
+        alert("Enter game name");
+        return;
+
+    }
+
+    if(imageLink.value.trim()==""){
+
+        alert("Enter image link");
+        return;
+
+    }
+
+    const devices={};
+
+    deviceList.forEach(device=>{
+
+        const check=
+        document.getElementById(device+"Check");
+
+        devices[device]={
+
+            enabled:check.checked,
+
+            link:check.checked
+            ? (document.getElementById(device+"Link")?.value || "")
+            : ""
+
+        };
+
+    });
+
+    const game={
+
+        name:gameName.value.trim(),
+
+        description:description.value.trim(),
+
+        image:imageLink.value.trim(),
+
+        coin:Number(coin.value),
+
+        category:category.value,
+
+        downloads:0,
+
+        featured:false,
+
+        popular:false,
+
+        new:true,
+
+        developer:currentUser.uid,
+
+        developerName:
+        currentUser.displayName || "",
+
+        devices:devices
+
+    };
+
+    if(editMode){
+
+        await update(
+            ref(db,"games/"+editingGameId),
+            game
+        );
+
+        alert("Game Updated");
+
+        editMode=false;
+        editingGameId=null;
+
+        uploadBtn.textContent="Upload Game";
+
+    }else{
+
+        await set(
+            push(ref(db,"games")),
+            game
+        );
+
+        alert("Game Uploaded");
+
+    }
+
+    resetForm();
+
+};
+
+function resetForm(){
+
+    gameName.value="";
+    description.value="";
+    imageLink.value="";
+    coin.value="";
+    category.value="";
+
+    preview.style.display="none";
+
+    deviceList.forEach(device=>{
+
+        document.getElementById(device+"Check").checked=false;
+
+    });
+
+    deviceInputs.innerHTML="";
+
+}
+// ===========================
+// Load Dashboard & Games
+// ===========================
+
+const gamesList = document.getElementById("gamesList");
+
+function loadDashboard() {
+
+    loadGames();
+
+}
+
+function loadGames() {
+
+    onValue(ref(db, "games"), (snapshot) => {
+
+        gamesList.innerHTML = "";
+
+        let total = 0;
+        let totalDownloadsValue = 0;
+        let totalCoinsValue = 0;
+
+        snapshot.forEach((child) => {
+
+            const id = child.key;
+            const game = child.val();
+
+            if (game.developer !== currentUser.uid) return;
+
+            total++;
+
+            totalDownloadsValue += game.downloads || 0;
+
+            totalCoinsValue +=
+                (game.downloads || 0) * (game.coin || 0);
+
+            let deviceHtml = "";
+
+            Object.keys(game.devices || {}).forEach(device => {
+
+                if (game.devices[device].enabled) {
+
+                    deviceHtml += `
+                    <span style="
+                    display:inline-block;
+                    padding:5px 10px;
+                    margin:3px;
+                    background:#2563eb;
+                    border-radius:20px;
+                    font-size:12px;
+                    ">
+                    ${device}
+                    </span>
+                    `;
+
+                }
+
+            });
+
+            gamesList.innerHTML += `
+
+            <div class="gameCard">
+
+                <img src="${game.image}">
+
+                <div class="gameInfo">
+
+                    <h3>${game.name}</h3>
+
+                    <p>${game.description || ""}</p>
+
+                    <p>🪙 ${game.coin}</p>
+
+                    <p>⬇ ${game.downloads || 0}</p>
+
+                    <div>${deviceHtml}</div>
+
+                    <div class="actions">
+
+                        <button
+                        class="editBtn"
+                        onclick="editGame('${id}')">
+                        Edit
+                        </button>
+
+                        <button
+                        class="deleteBtn"
+                        onclick="deleteGame('${id}')">
+                        Delete
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            `;
+
+        });
+
+        totalGames.textContent = total;
+        totalDownloads.textContent = totalDownloadsValue;
+        totalCoins.textContent = totalCoinsValue;
+
+        if (total === 0) {
+
+            gamesList.innerHTML =
+                "<p>No games uploaded yet.</p>";
+
+        }
+
+    });
+
+}
+// ===========================
+// Delete Game
+// ===========================
+
+window.deleteGame = async function(id){
+
+    const ok = confirm(
+        "Are you sure you want to delete this game?"
+    );
+
+    if(!ok) return;
+
+    try{
+
+        await remove(
+            ref(db,"games/"+id)
+        );
+
+        alert("Game deleted successfully.");
+
+    }catch(error){
+
+        console.error(error);
+
+        alert("Failed to delete game.");
+
+    }
+
+};
+// ===========================
+// Edit Game
+// ===========================
+
+window.editGame = async function(id){
+
+    const snap = await get(
+        ref(db,"games/"+id)
+    );
+
+    if(!snap.exists()) return;
+
+    const game = snap.val();
+
+    editMode = true;
+    editingGameId = id;
+
+    uploadBtn.textContent = "Save Changes";
+
+    gameName.value = game.name || "";
+    description.value = game.description || "";
+    imageLink.value = game.image || "";
+    coin.value = game.coin || "";
+    category.value = game.category || "";
+
+    if(game.image){
+
+        preview.src = game.image;
+        preview.style.display = "block";
+
+    }
+
+    deviceList.forEach(device=>{
+
+        const check =
+        document.getElementById(device+"Check");
+
+        check.checked =
+        game.devices?.[device]?.enabled || false;
+
+    });
+
+    renderDeviceInputs();
+
+    deviceList.forEach(device=>{
+
+        const input =
+        document.getElementById(device+"Link");
+
+        if(input){
+
+            input.value =
+            game.devices?.[device]?.link || "";
+
+        }
+
+    });
+
+    window.scrollTo({
+
+        top:0,
+
+        behavior:"smooth"
+
+    });
+
+};
+</script>
+
+</body>
+</html>
