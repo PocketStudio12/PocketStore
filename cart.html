@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport"
+content="width=device-width,initial-scale=1">
+
+<title>Cart</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+margin:0;
+background:#0f172a;
+color:white;
+font-family:Poppins,sans-serif;
+}
+
+header{
+
+padding:18px;
+background:#111827;
+font-size:24px;
+font-weight:bold;
+
+}
+
+#cartList{
+
+padding:20px;
+
+}
+
+.card{
+
+background:#1e293b;
+
+border-radius:18px;
+
+padding:15px;
+
+margin-bottom:18px;
+
+}
+
+.card img{
+
+width:100%;
+
+height:180px;
+
+object-fit:cover;
+
+border-radius:15px;
+
+}
+
+button{
+
+width:100%;
+
+padding:15px;
+
+margin-top:15px;
+
+border:none;
+
+border-radius:12px;
+
+background:#2563eb;
+
+color:white;
+
+font-size:18px;
+
+cursor:pointer;
+
+}
+
+.coin{
+
+color:#facc15;
+
+font-weight:bold;
+
+margin-top:10px;
+
+}
+
+.empty{
+
+text-align:center;
+
+margin-top:80px;
+
+font-size:22px;
+
+color:#94a3b8;
+
+}
+
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+<button id="backBtn">← Back</button>
+🛒 My Cart
+
+</header>
+
+<div id="cartList">
+
+Loading...
+
+</div>
+
+<script type="module">
+import { auth, db } from "./firebase-config.js";
+
+import {
+    onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+import {
+  ref,
+  get,
+  set,
+  push,
+  update,
+  remove,
+  onValue
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+//back
+
+document.getElementById("backBtn").onclick = () => {
+    window.location.href = "index.html";
+};
+
+
+// ==========================
+// Elements
+// ==========================
+
+const cartList =
+document.getElementById("cartList");
+
+let currentUser = null;
+
+
+// ==========================
+// Auth
+// ==========================
+
+onAuthStateChanged(auth,(user)=>{
+
+    if(!user){
+
+        location.href = "login.html";
+
+        return;
+
+    }
+
+    currentUser = user;
+
+    loadCart();
+
+});
+
+
+// ==========================
+// Load Cart
+// ==========================
+
+function loadCart(){
+
+    onValue(
+
+        ref(db,"users/"+currentUser.uid+"/cart"),
+
+        async (snapshot)=>{
+
+            cartList.innerHTML = "";
+
+
+            if(!snapshot.exists()){
+
+                cartList.innerHTML = `
+
+                <div class="empty">
+
+                    🛒 Your Cart is Empty
+
+                </div>
+
+                `;
+
+                return;
+
+            }
+
+
+            const ids =
+            Object.keys(snapshot.val());
+
+
+            for(const id of ids){
+
+                const gameSnap =
+                await get(
+                    ref(db,"games/"+id)
+                );
+
+
+                if(!gameSnap.exists())
+                continue;
+
+
+                const game =
+                gameSnap.val();
+
+
+                const card =
+                document.createElement("div");
+
+
+                card.className = "card";
+
+
+                card.innerHTML = `
+
+                <img src="${game.image}">
+
+                <h2>
+
+                    ${game.name}
+
+                </h2>
+
+                <p>
+
+                    ${game.description || ""}
+
+                </p>
+
+                <div class="coin">
+
+                    🪙 ${game.coin}
+
+                </div>
+
+                <button
+                data-id="${id}">
+
+                    Pay
+
+                </button>
+
+                `;
+
+
+                cartList.appendChild(card);
+
+            }
+
+        }
+
+    );
+
+}
+// ==========================
+// Pay Button Click
+// ==========================
+
+cartList.addEventListener("click", async (e)=>{
+
+    if(e.target.tagName !== "BUTTON")
+        return;
+
+    const gameId =
+    e.target.dataset.id;
+
+    if(!gameId)
+        return;
+
+
+    // User Data
+
+    const userSnap =
+    await get(
+        ref(db,"users/"+currentUser.uid)
+    );
+
+    const user =
+    userSnap.val();
+
+
+    // Game Data
+
+    const gameSnap =
+    await get(
+        ref(db,"games/"+gameId)
+    );
+
+    const game =
+    gameSnap.val();
+
+
+    // Already Purchased
+
+    if(user.library && user.library[gameId]){
+
+        alert("Already Purchased");
+
+        return;
+
+    }
+
+
+    // Coin Check
+
+    if((user.coins || 0) < game.coin){
+
+        alert("Not Enough Coins");
+
+        return;
+
+    }
+
+
+    // Pay
+
+    const updates = {};
+
+    // Deduct Coin
+    updates[
+        "users/"+currentUser.uid+"/coins"
+    ] =
+    user.coins - game.coin;
+
+    // Add Library
+    updates[
+        "users/"+currentUser.uid+"/library/"+gameId
+    ] = true;
+
+    // Remove Cart
+    updates[
+        "users/"+currentUser.uid+"/cart/"+gameId
+    ] = null;
+
+
+    await update(
+        ref(db),
+        updates
+    );
+
+
+    alert("✅ Purchase Successful");
+
+});
+</script>
+
+</body>
+
+</html>

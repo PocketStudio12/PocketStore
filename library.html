@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport"
+content="width=device-width,initial-scale=1">
+
+<title>My Library</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+.bottomNav{
+
+position:fixed;
+
+bottom:0;
+
+left:0;
+
+width:100%;
+
+height:65px;
+
+background:#111827;
+
+display:flex;
+
+justify-content:space-around;
+
+align-items:center;
+
+border-top:1px solid #334155;
+
+}
+
+.bottomNav button{
+
+background:none;
+
+border:none;
+
+color:white;
+
+font-size:15px;
+
+cursor:pointer;
+
+}
+
+.bottomNav .active{
+
+color:#38bdf8;
+
+font-weight:bold;
+
+}
+
+body{
+
+padding-bottom:80px;
+
+}
+body{
+margin:0;
+background:#0f172a;
+color:white;
+font-family:Poppins,sans-serif;
+}
+
+header{
+padding:18px;
+background:#111827;
+font-size:24px;
+font-weight:bold;
+}
+
+#libraryList{
+padding:20px;
+}
+
+.card{
+background:#1e293b;
+padding:15px;
+margin-bottom:18px;
+border-radius:18px;
+}
+
+.card img{
+width:100%;
+height:180px;
+object-fit:cover;
+border-radius:15px;
+}
+
+.device{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-top:10px;
+padding:10px;
+background:#334155;
+border-radius:10px;
+}
+
+button{
+padding:10px 16px;
+border:none;
+border-radius:10px;
+background:#2563eb;
+color:white;
+cursor:pointer;
+}
+
+.empty{
+text-align:center;
+margin-top:80px;
+font-size:22px;
+color:#94a3b8;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+📚 My Library
+
+</header>
+
+<div id="libraryList">
+
+Loading...
+
+</div>
+
+<script type="module">
+import { auth, db } from "./firebase-config.js";
+
+import {
+onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+import {
+ref,
+get,
+onValue
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+const libraryList =
+document.getElementById("libraryList");
+
+let currentUser = null;
+
+onAuthStateChanged(auth,(user)=>{
+
+    if(!user){
+
+        location.href="login.html";
+        return;
+
+    }
+
+    currentUser=user;
+
+    loadLibrary();
+
+});
+
+function loadLibrary(){
+
+    onValue(
+        ref(db,"users/"+currentUser.uid+"/library"),
+
+        async(snapshot)=>{
+
+            libraryList.innerHTML = "";
+
+            // Empty Library
+            if(!snapshot.exists()){
+
+                libraryList.innerHTML = `
+                    <div class="empty">
+                        No Purchased Games
+                    </div>
+                `;
+
+                return;
+            }
+
+            // এখান থেকে শুরু হবে Game Load
+            const ids = Object.keys(snapshot.val());
+
+            for(const id of ids){
+
+                const gameSnap = await get(
+                    ref(db,"games/"+id)
+                );
+
+                if(!gameSnap.exists()) continue;
+
+                const game = gameSnap.val();
+
+let devicesHtml = "";
+
+Object.keys(game.devices || {}).forEach(device => {
+
+    if (!game.devices[device].enabled) return;
+
+    if (device === "web") {
+
+        devicesHtml += `
+        <div class="device">
+            <span>🌐 Web</span>
+            <button onclick="playWebGame('${id}')">
+                ▶ Play
+            </button>
+        </div>
+        `;
+
+    } else {
+
+        devicesHtml += `
+        <div class="device">
+            <span>${device}</span>
+            <button onclick="window.open('${game.devices[device].link}','_blank')">
+                Install
+            </button>
+        </div>
+        `;
+
+    }
+
+});
+
+libraryList.innerHTML += `
+<div class="card">
+
+    <img src="${game.image}" alt="${game.name}">
+
+    <h2>${game.name}</h2>
+
+    <p>${game.description || ""}</p>
+
+    ${devicesHtml}
+
+</div>
+`;
+                // এখানে card তৈরির code থাকবে
+            }
+
+        }
+    );
+
+}
+
+window.playWebGame = async function(id) {
+
+    const snap = await get(ref(db, "games/" + id));
+
+    if (!snap.exists()) return;
+
+    const game = snap.val();
+
+    const win = window.open();
+
+    win.document.open();
+    win.document.write(game.devices.web.link);
+    win.document.close();
+
+};
+</script>
+
+<nav class="bottomNav">
+
+<button onclick="location.href='index.html'">
+🏠<br>Home
+</button>
+
+<button class="active">
+📚<br>Library
+</button>
+
+<button onclick="location.href='profile.html'">
+👤<br>Profile
+</button>
+
+</nav>
+</body>
+</html>
